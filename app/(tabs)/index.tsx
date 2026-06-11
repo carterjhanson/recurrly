@@ -1,5 +1,5 @@
 import "@/global.css";
-import {Image, Text, View} from "react-native";
+import {FlatList, Image, Text, View} from "react-native";
 import {Link} from "expo-router";
 import { styled } from "nativewind";
 import {SafeAreaView as RNSafeAreaView} from 'react-native-safe-area-context';
@@ -24,6 +24,7 @@ export default function App() {
                 <Image source={icons.add} className="home-add-icon" />
             </View>
 
+
             <View className="home-balance-card">
                 <Text className="home-balance-label">Balance</Text>
 
@@ -40,7 +41,16 @@ export default function App() {
 
             <View>
                 <ListHeading title="Upcoming"/>
-                <UpcomingSubscriptionCard data={UPCOMING_SUBSCRIPTIONS[0]}/>
+                <FlatList
+                    data={UPCOMING_SUBSCRIPTIONS}
+                    renderItem={({ item}) => (
+                        <UpcomingSubscriptionCard {...item} />
+                    )}
+                    keyExtractor={(item) => item.id}
+                    horizontal
+                    showsHorizontalScrollIndicator={false}
+                    ListEmptyComponent={<Text className="home-empty-state">No upcoming renewals yet.</Text> }
+                />
             </View>
 
             <View>
