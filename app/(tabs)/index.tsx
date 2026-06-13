@@ -11,7 +11,7 @@ import { SafeAreaView as RNSafeAreaView } from 'react-native-safe-area-context';
 // App data and assets.
 import images from "@/constants/images";
 import {
-    HOME_BALANCE,
+    HOME_BALANCE, HOME_SUBSCRIPTIONS,
     HOME_USER,
     UPCOMING_SUBSCRIPTIONS
 } from "@/constants/data";
@@ -24,11 +24,15 @@ import dayjs from "dayjs";
 // Reusable components.
 import ListHeading from "@/components/ListHeading";
 import UpcomingSubscriptionCard from "@/components/UpcomingSubscriptionCard";
+import SubscriptionCard from "@/components/SubscriptionCard";
+import {useState} from "react";
 
 // Create a NativeWind-compatible SafeAreaView.
 const SafeAreaView = styled(RNSafeAreaView);
 
 export default function App() {
+    const [expandedSubscriptionId, setExpandedSubscriptionId] = useState<string | null>(null);
+
     return (
         // Main screen container.
         <SafeAreaView className="flex-1 bg-background p-5">
@@ -85,6 +89,11 @@ export default function App() {
             {/* All Subscriptions */}
             <View>
                 <ListHeading title="All Subscriptions" />
+                <SubscriptionCard
+                    { ...HOME_SUBSCRIPTIONS[0]}
+                    expanded={expandedSubscriptionId === HOME_SUBSCRIPTIONS[0].id}
+                    onPress={() => setExpandedSubscriptionId((currentId) => (currentId === HOME_SUBSCRIPTIONS[0].id ? null : HOME_SUBSCRIPTIONS[0].id))}
+                />
             </View>
 
         </SafeAreaView>
