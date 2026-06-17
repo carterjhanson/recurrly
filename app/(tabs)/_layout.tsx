@@ -1,14 +1,20 @@
 // Import the Tabs component from Expo Router.
 // This creates the bottom navigation bar for our app.
-import { Tabs } from "expo-router";
+import { Redirect, Tabs } from "expo-router";
+
+// Clerk hook used to check if the user is signed in.
+import { useAuth } from "@clerk/expo";
+
 // Import our list of tabs from a separate file.
 // This contains information like the tab name, title, and icon.
 import { tabs } from "@/constants/data";
-import { View, Image } from "react-native";
+
+import { View, Image, ImageSourcePropType } from "react-native";
 
 // This hook gives us information about the device's safe area.
 // Safe areas help us avoid things like the iPhone home indicator.
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+
 import { colors, components } from "@/constants/theme";
 
 // Grab the tab bar settings from our theme file.
@@ -20,52 +26,43 @@ const TAB_ICON_SIZE = 24;
 // Size of the circular background behind the icon.
 const TAB_PILL_SIZE = 48;
 
+type TabIconProps = {
+    focused: boolean;
+    icon: ImageSourcePropType;
+};
+
 // Main component that controls our bottom tab navigation.
 const TabLayout = () => {
+    const { isSignedIn, isLoaded } = useAuth();
 
     // Get safe area information for the current device.
-    // Example: iPhones with a home indicator need extra bottom spacing.
     const insets = useSafeAreaInsets();
 
-    // This component is responsible for rendering a single tab icon.
-    // It receives:
-    // - focused: true if the tab is currently selected
-    // - icon: the image to display
-    const TabIcon = ({ focused, icon }: TabIconProps) => (
+    // Wait until Clerk finishes checking auth status.
+    if (!isLoaded) {
+        return null;
+    }
 
-        // Outer container that holds the icon.
+    // If the user is not signed in, send them to sign in.
+    if (!isSignedIn) {
+        return <Redirect href="/(auth)/sign-in" />;
+    }
+
+    const TabIcon = ({ focused, icon }: TabIconProps) => (
         <View
             style={{
-                // Width and height create a square container.
                 width: TAB_PILL_SIZE,
                 height: TAB_PILL_SIZE,
-
-                // Makes the square become a circle.
                 borderRadius: TAB_PILL_SIZE / 2,
-
-                // If the tab is selected, show the accent color.
-                // Otherwise make it transparent.
-                backgroundColor: focused
-                    ? colors.accent
-                    : "transparent",
-
-                // Center the icon horizontally.
+                backgroundColor: focused ? colors.accent : "transparent",
                 justifyContent: "center",
-
-                // Center the icon vertically.
                 alignItems: "center",
             }}
         >
-
-            {/* Display the tab icon image */}
             <Image
                 source={icon}
-
-                // Prevent the image from stretching.
                 resizeMode="contain"
-
                 style={{
-                    // Size of the icon itself.
                     width: TAB_ICON_SIZE,
                     height: TAB_ICON_SIZE,
                 }}
@@ -73,90 +70,39 @@ const TabLayout = () => {
         </View>
     );
 
-    // Render the actual tab navigator.
     return (
         <Tabs
             screenOptions={{
-
-                // Hide the header at the top of each screen.
                 headerShown: false,
-
-                // Hide the text labels under each icon.
                 tabBarShowLabel: false,
-
-                // Styling for the entire tab bar.
                 tabBarStyle: {
-
-                    // Allows the tab bar to float above the screen.
                     position: "absolute",
-
-                    // Push the tab bar up from the bottom.
-                    // We use whichever value is larger:
-                    // - the device safe area
-                    // - our custom spacing
-                    bottom: Math.max(
-                        insets.bottom,
-                        tabBar.horizontalInset
-                    ),
-
-                    // Height of the tab bar.
+                    bottom: Math.max(insets.bottom, tabBar.horizontalInset),
                     height: tabBar.height,
-
-                    // Add spacing on the left and right sides.
                     marginHorizontal: tabBar.horizontalInset,
-
-                    // Rounded corners.
                     borderRadius: tabBar.radius,
-
-                    // Background color of the tab bar.
                     backgroundColor: colors.primary,
-
-                    // Remove the default top border.
                     borderTopWidth: 0,
-
-                    // Remove Android shadow.
                     elevation: 0,
                 },
-
-                // Controls spacing inside each tab button.
                 tabBarItemStyle: {
-                    paddingVertical:
-                        tabBar.height / 2 -
-                        tabBar.iconFrame / 1.6,
+                    paddingVertical: tabBar.height / 2 - tabBar.iconFrame / 1.6,
                 },
-
-                // Controls the size of the icon area.
                 tabBarIconStyle: {
                     width: tabBar.iconFrame,
                     height: tabBar.iconFrame,
-
-                    // Center icons horizontally.
                     alignItems: "center",
                 },
             }}
         >
-
-            {/* Loop through every tab in our tabs array */}
             {tabs.map((tab) => (
-
-                // Create a screen for each tab.
                 <Tabs.Screen
                     key={tab.name}
                     name={tab.name}
                     options={{
-
-                        // Text shown in navigation settings.
                         title: tab.title,
-
-                        // Custom icon renderer.
                         tabBarIcon: ({ focused }) => (
-
-                            // Pass the focused state and icon
-                            // into our custom TabIcon component.
-                            <TabIcon
-                                focused={focused}
-                                icon={tab.icon}
-                            />
+                            <TabIcon focused={focused} icon={tab.icon} />
                         ),
                     }}
                 />
@@ -165,8 +111,10 @@ const TabLayout = () => {
     );
 };
 
-// Export this component so Expo Router can use it.
 export default TabLayout;
+
+
+
 
 
 /*

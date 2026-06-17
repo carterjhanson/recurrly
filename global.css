@@ -327,3 +327,144 @@
     font-family: sans-bold;
     color: #fff9e3;
 }
+
+.auth-safe-area {
+    flex: 1;
+    background-color: #fff9e3;
+}
+
+.auth-screen {
+    flex: 1;
+    padding: 20px;
+    justify-content: center;
+}
+
+.auth-brand-block {
+    align-items: center;
+    margin-bottom: 36px;
+}
+
+.auth-logo-row {
+    flex-direction: row;
+    align-items: center;
+    gap: 12px;
+}
+
+.auth-logo-mark {
+    width: 52px;
+    height: 52px;
+    border-radius: 14px;
+    background-color: #ea7a53;
+    align-items: center;
+    justify-content: center;
+}
+
+.auth-logo-text {
+    font-size: 26px;
+    font-family: sans-extrabold;
+    color: #fff9e3;
+}
+
+.auth-brand-title {
+    font-size: 24px;
+    font-family: sans-extrabold;
+    color: #081126;
+}
+
+.auth-brand-subtitle {
+    font-size: 11px;
+    font-family: sans-bold;
+    color: rgba(0, 0, 0, 0.55);
+    letter-spacing: 1px;
+}
+
+.auth-title {
+    text-align: center;
+    font-size: 28px;
+    font-family: sans-extrabold;
+    color: #081126;
+}
+
+.auth-subtitle {
+    margin-top: 8px;
+    margin-bottom: 28px;
+    text-align: center;
+    font-size: 15px;
+    font-family: sans-medium;
+    color: rgba(0, 0, 0, 0.6);
+}
+
+.auth-card {
+    border-width: 1px;
+    border-color: rgba(0, 0, 0, 0.1);
+    border-radius: 24px;
+    padding: 20px;
+    background-color: #fff8e7;
+}
+
+.auth-field {
+    margin-bottom: 16px;
+}
+
+.auth-label {
+    margin-bottom: 8px;
+    font-size: 14px;
+    font-family: sans-bold;
+    color: #081126;
+}
+
+.auth-input {
+    border-width: 1px;
+    border-color: rgba(0, 0, 0, 0.12);
+    border-radius: 14px;
+    padding: 14px;
+    font-size: 15px;
+    font-family: sans-medium;
+    color: #081126;
+    background-color: #fff9e3;
+}
+
+.auth-error {
+    margin-top: 6px;
+    font-size: 12px;
+    font-family: sans-medium;
+    color: #dc2626;
+}
+
+.auth-button {
+    margin-top: 8px;
+    border-radius: 16px;
+    padding-top: 16px;
+    padding-bottom: 16px;
+    align-items: center;
+    background-color: #ea7a53;
+}
+
+.auth-button-disabled {
+    opacity: 0.5;
+}
+
+.auth-button-text {
+    font-size: 16px;
+    font-family: sans-extrabold;
+    color: #fff9e3;
+}
+
+.auth-link-row {
+    margin-top: 18px;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
+.auth-link-copy {
+    font-size: 14px;
+    font-family: sans-medium;
+    color: rgba(0, 0, 0, 0.6);
+}
+
+.auth-link {
+    font-size: 14px;
+    font-family: sans-bold;
+    color: #ea7a53;
+}
