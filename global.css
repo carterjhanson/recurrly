@@ -66,7 +66,6 @@
     max-width: 48px;
     max-height: 48px;
     border-radius: 999px;
-    object-fit: cover;
 }
 
 .home-user-name {
@@ -81,7 +80,6 @@
     height: 40px;
     max-width: 40px;
     max-height: 40px;
-    object-fit: contain;
 }
 
 .home-balance-card {
@@ -181,7 +179,6 @@
     height: 56px;
     max-width: 56px;
     max-height: 56px;
-    object-fit: contain;
 }
 
 .upcoming-price {
@@ -328,15 +325,10 @@
     color: #fff9e3;
 }
 
+
 .auth-safe-area {
     flex: 1;
     background-color: #fff9e3;
-}
-
-.auth-screen {
-    flex: 1;
-    padding: 20px;
-    justify-content: center;
 }
 
 .auth-brand-block {
@@ -351,28 +343,28 @@
 }
 
 .auth-logo-mark {
-    width: 52px;
-    height: 52px;
-    border-radius: 14px;
+    width: 56px;
+    height: 56px;
+    border-radius: 16px;
     background-color: #ea7a53;
     align-items: center;
     justify-content: center;
 }
 
 .auth-logo-text {
-    font-size: 26px;
+    font-size: 28px;
     font-family: sans-extrabold;
     color: #fff9e3;
 }
 
 .auth-brand-title {
-    font-size: 24px;
+    font-size: 30px;
     font-family: sans-extrabold;
     color: #081126;
 }
 
 .auth-brand-subtitle {
-    font-size: 11px;
+    font-size: 12px;
     font-family: sans-bold;
     color: rgba(0, 0, 0, 0.55);
     letter-spacing: 1px;
@@ -395,6 +387,7 @@
 }
 
 .auth-card {
+    width: 100%;
     border-width: 1px;
     border-color: rgba(0, 0, 0, 0.1);
     border-radius: 24px;
@@ -414,18 +407,28 @@
 }
 
 .auth-input {
+    width: 100%;
+    min-height: 52px;
     border-width: 1px;
     border-color: rgba(0, 0, 0, 0.12);
     border-radius: 14px;
-    padding: 14px;
+    padding-left: 14px;
+    padding-right: 14px;
     font-size: 15px;
     font-family: sans-medium;
     color: #081126;
     background-color: #fff9e3;
 }
 
-.auth-error {
+.auth-helper-text {
     margin-top: 6px;
+    font-size: 13px;
+    font-family: sans-medium;
+    color: rgba(0, 0, 0, 0.6);
+}
+
+.auth-error {
+    margin-bottom: 12px;
     font-size: 12px;
     font-family: sans-medium;
     color: #dc2626;
@@ -437,6 +440,7 @@
     padding-top: 16px;
     padding-bottom: 16px;
     align-items: center;
+    justify-content: center;
     background-color: #ea7a53;
 }
 

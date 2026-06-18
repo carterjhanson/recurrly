@@ -1,8 +1,5 @@
-import "@/global.css";
-
 import { FlatList, Image, Text, View } from "react-native";
-import { styled } from "nativewind";
-import { SafeAreaView as RNSafeAreaView } from "react-native-safe-area-context";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { useState } from "react";
 import dayjs from "dayjs";
 
@@ -17,12 +14,10 @@ import { icons } from "@/constants/icons";
 import { formatCurrency } from "@/lib/utils";
 
 import ListHeading from "@/components/ListHeading";
-import UpcomingSubscriptionCard from "@/components/UpcomingSubscriptionCard";
 import SubscriptionCard from "@/components/SubscriptionCard";
+import UpcomingSubscriptionCard from "@/components/UpcomingSubscriptionCard";
 
-const SafeAreaView = styled(RNSafeAreaView);
-
-export default function App() {
+export default function HomeScreen() {
     const [expandedSubscriptionId, setExpandedSubscriptionId] = useState<
         string | null
     >(null);
@@ -34,24 +29,26 @@ export default function App() {
                 keyExtractor={(item) => item.id}
                 ListHeaderComponent={
                     <>
-                        {/* Header */}
                         <View className="home-header">
                             <View className="home-user">
-                                <Image source={images.avatar} className="home-avatar" />
+                                <Image
+                                    source={images.avatar}
+                                    resizeMode="cover"
+                                    style={{ width: 48, height: 48, borderRadius: 24 }}
+                                />
 
-                                <Text className="home-user-name">
-                                    {HOME_USER.name}
-                                </Text>
+                                <Text className="home-user-name">{HOME_USER.name}</Text>
                             </View>
 
-                            <Image source={icons.add} className="home-add-icon" />
+                            <Image
+                                source={icons.add}
+                                resizeMode="contain"
+                                style={{ width: 40, height: 40 }}
+                            />
                         </View>
 
-                        {/* Balance Card */}
                         <View className="home-balance-card">
-                            <Text className="home-balance-label">
-                                Balance
-                            </Text>
+                            <Text className="home-balance-label">Balance</Text>
 
                             <View className="home-balance-row">
                                 <Text className="home-balance-amount">
@@ -64,15 +61,12 @@ export default function App() {
                             </View>
                         </View>
 
-                        {/* Upcoming Subscriptions */}
                         <View>
                             <ListHeading title="Upcoming" />
 
                             <FlatList
                                 data={UPCOMING_SUBSCRIPTIONS}
-                                renderItem={({ item }) => (
-                                    <UpcomingSubscriptionCard {...item} />
-                                )}
+                                renderItem={({ item }) => <UpcomingSubscriptionCard {...item} />}
                                 keyExtractor={(item) => item.id}
                                 horizontal
                                 showsHorizontalScrollIndicator={false}
@@ -84,7 +78,6 @@ export default function App() {
                             />
                         </View>
 
-                        {/* All Subscriptions */}
                         <ListHeading title="All Subscriptions" />
                     </>
                 }
@@ -94,7 +87,7 @@ export default function App() {
                         expanded={expandedSubscriptionId === item.id}
                         onPress={() =>
                             setExpandedSubscriptionId((currentId) =>
-                                currentId === item.id ? null : item.id
+                                currentId === item.id ? null : item.id,
                             )
                         }
                     />
@@ -103,32 +96,10 @@ export default function App() {
                 ItemSeparatorComponent={() => <View className="h-4" />}
                 showsVerticalScrollIndicator={false}
                 ListEmptyComponent={
-                    <Text className="home-empty-state">
-                        No subscriptions yet.
-                    </Text>
+                    <Text className="home-empty-state">No subscriptions yet.</Text>
                 }
                 contentContainerClassName="pb-30"
             />
         </SafeAreaView>
     );
 }
-
-/*
-Data Flow:
-
-HOME_USER
-    ↓
-Displays avatar and username
-
-HOME_BALANCE
-    ↓
-Displays balance and renewal date
-
-UPCOMING_SUBSCRIPTIONS
-    ↓
-FlatList loops through each item
-    ↓
-Creates an UpcomingSubscriptionCard
-    ↓
-Displays all upcoming subscriptions
-*/

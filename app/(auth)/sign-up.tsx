@@ -3,7 +3,10 @@ import { Link, useRouter, type Href } from "expo-router";
 import { useState } from "react";
 import {
     ActivityIndicator,
+    KeyboardAvoidingView,
+    Platform,
     Pressable,
+    ScrollView,
     Text,
     TextInput,
     View,
@@ -23,9 +26,7 @@ export default function SignUpScreen() {
     const [loading, setLoading] = useState(false);
 
     const canSubmit =
-        emailAddress.trim().length > 0 &&
-        password.length >= 8 &&
-        !loading;
+        emailAddress.trim().length > 0 && password.length >= 8 && !loading;
 
     const canVerify = code.trim().length >= 4 && !loading;
 
@@ -36,13 +37,13 @@ export default function SignUpScreen() {
         setLoading(true);
 
         try {
-            const { error } = await signUp.password({
+            const { error: signUpError } = await signUp.password({
                 emailAddress: emailAddress.trim(),
                 password,
             });
 
-            if (error) {
-                setError(error.message || "Unable to create account.");
+            if (signUpError) {
+                setError(signUpError.message || "Unable to create account.");
                 return;
             }
 
@@ -71,11 +72,12 @@ export default function SignUpScreen() {
                     navigate: ({ decorateUrl }) => {
                         const url = decorateUrl("/(tabs)");
 
-                        if (url.startsWith("http")) {
+                        if (Platform.OS === "web" && url.startsWith("http")) {
                             window.location.href = url;
-                        } else {
-                            router.replace(url as Href);
+                            return;
                         }
+
+                        router.replace(url as Href);
                     },
                 });
             } else {
@@ -88,141 +90,146 @@ export default function SignUpScreen() {
         }
     };
 
-    if (signUp.status === "complete" || isSignedIn) {
-        return null;
-    }
+    if (signUp.status === "complete" || isSignedIn) return null;
 
     return (
-        <SafeAreaView className="auth-safe-area">
-            <View className="auth-screen">
-                <View className="auth-brand-block">
-                    <View className="auth-logo-row">
-                        <View className="auth-logo-mark">
-                            <Text className="auth-logo-text">R</Text>
-                        </View>
+        <SafeAreaView
+            style={{
+                flex: 1,
+                backgroundColor: "#fff9e3",
+            }}
+        >
+            <KeyboardAvoidingView
+                style={{ flex: 1 }}
+                behavior={Platform.OS === "ios" ? "padding" : "height"}
+            >
+                <ScrollView
+                    keyboardShouldPersistTaps="handled"
+                    showsVerticalScrollIndicator={false}
+                    contentContainerStyle={{
+                        flexGrow: 1,
+                        justifyContent: "center",
+                        padding: 20,
+                    }}
+                >
+                    <View className="auth-brand-block">
+                        <View className="auth-logo-row">
+                            <View className="auth-logo-mark">
+                                <Text className="auth-logo-text">R</Text>
+                            </View>
 
-                        <View>
-                            <Text className="auth-brand-title">Recurrly</Text>
-                            <Text className="auth-brand-subtitle">SMART BILLING</Text>
+                            <View>
+                                <Text className="auth-brand-title">Recurrly</Text>
+                                <Text className="auth-brand-subtitle">SMART BILLING</Text>
+                            </View>
                         </View>
                     </View>
-                </View>
 
-                <Text className="auth-title">
-                    {pendingVerification ? "Verify your email" : "Create account"}
-                </Text>
+                    <Text className="auth-title">
+                        {pendingVerification ? "Verify your email" : "Create account"}
+                    </Text>
 
-                <Text className="auth-subtitle">
-                    {pendingVerification
-                        ? "Enter the code sent to your email."
-                        : "Track renewals, control spending, and stay ahead."}
-                </Text>
+                    <Text className="auth-subtitle">
+                        {pendingVerification
+                            ? "Enter the code sent to your email."
+                            : "Track renewals, control spending, and stay ahead."}
+                    </Text>
 
-                <View className="auth-card">
-                    {!pendingVerification ? (
-                        <>
-                            <View className="auth-field">
-                                <Text className="auth-label">Email</Text>
+                    <View className="auth-card">
+                        {!pendingVerification ? (
+                            <>
+                                <View className="auth-field">
+                                    <Text className="auth-label">Email</Text>
+                                    <TextInput
+                                        className="auth-input"
+                                        placeholder="Enter your email"
+                                        placeholderTextColor="rgba(0,0,0,0.45)"
+                                        autoCapitalize="none"
+                                        autoCorrect={false}
+                                        keyboardType="email-address"
+                                        textContentType="emailAddress"
+                                        value={emailAddress}
+                                        onChangeText={setEmailAddress}
+                                    />
+                                </View>
 
-                                <TextInput
-                                    className="auth-input"
-                                    placeholder="Enter your email"
-                                    placeholderTextColor="rgba(0,0,0,0.45)"
-                                    autoCapitalize="none"
-                                    autoCorrect={false}
-                                    keyboardType="email-address"
-                                    value={emailAddress}
-                                    onChangeText={setEmailAddress}
+                                <View className="auth-field">
+                                    <Text className="auth-label">Password</Text>
+                                    <TextInput
+                                        className="auth-input"
+                                        placeholder="Create a password"
+                                        placeholderTextColor="rgba(0,0,0,0.45)"
+                                        secureTextEntry
+                                        textContentType="newPassword"
+                                        value={password}
+                                        onChangeText={setPassword}
+                                    />
+                                    <Text className="auth-helper-text">Use at least 8 characters.</Text>
+                                </View>
+
+                                {!!error && <Text className="auth-error">{error}</Text>}
+
+                                <View
+                                    nativeID="clerk-captcha"
+                                    style={{
+                                        width: "100%",
+                                        minHeight: 80,
+                                        marginTop: 12,
+                                        marginBottom: 12,
+                                    }}
                                 />
-                            </View>
 
-                            <View className="auth-field">
-                                <Text className="auth-label">Password</Text>
+                                <Pressable
+                                    className={`auth-button ${!canSubmit ? "auth-button-disabled" : ""}`}
+                                    onPress={handleSignUp}
+                                    disabled={!canSubmit}
+                                >
+                                    {loading ? (
+                                        <ActivityIndicator color="#fff9e3" />
+                                    ) : (
+                                        <Text className="auth-button-text">Create account</Text>
+                                    )}
+                                </Pressable>
 
-                                <TextInput
-                                    className="auth-input"
-                                    placeholder="Create a password"
-                                    placeholderTextColor="rgba(0,0,0,0.45)"
-                                    secureTextEntry
-                                    value={password}
-                                    onChangeText={setPassword}
-                                />
+                                <View className="auth-link-row">
+                                    <Text className="auth-link-copy">Already have an account? </Text>
+                                    <Link href="/(auth)/sign-in">
+                                        <Text className="auth-link">Sign in</Text>
+                                    </Link>
+                                </View>
+                            </>
+                        ) : (
+                            <>
+                                <View className="auth-field">
+                                    <Text className="auth-label">Verification code</Text>
+                                    <TextInput
+                                        className="auth-input"
+                                        placeholder="Enter code"
+                                        placeholderTextColor="rgba(0,0,0,0.45)"
+                                        keyboardType="number-pad"
+                                        value={code}
+                                        onChangeText={setCode}
+                                    />
+                                </View>
 
-                                <Text className="auth-link-copy">
-                                    Use at least 8 characters.
-                                </Text>
-                            </View>
+                                {!!error && <Text className="auth-error">{error}</Text>}
 
-                            {!!error && <Text className="auth-error">{error}</Text>}
-
-                            <View
-                                nativeID="clerk-captcha"
-                                style={{
-                                    width: "100%",
-                                    minHeight: 80,
-                                    marginTop: 12,
-                                    marginBottom: 12,
-                                }}
-                            />
-
-                            <Pressable
-                                className={`auth-button ${
-                                    !canSubmit ? "auth-button-disabled" : ""
-                                }`}
-                                onPress={handleSignUp}
-                                disabled={!canSubmit}
-                            >
-                                {loading ? (
-                                    <ActivityIndicator color="#fff9e3" />
-                                ) : (
-                                    <Text className="auth-button-text">Create account</Text>
-                                )}
-                            </Pressable>
-
-                            <View className="auth-link-row">
-                                <Text className="auth-link-copy">
-                                    Already have an account?{" "}
-                                </Text>
-
-                                <Link href="/(auth)/sign-in">
-                                    <Text className="auth-link">Sign in</Text>
-                                </Link>
-                            </View>
-                        </>
-                    ) : (
-                        <>
-                            <View className="auth-field">
-                                <Text className="auth-label">Verification code</Text>
-
-                                <TextInput
-                                    className="auth-input"
-                                    placeholder="Enter code"
-                                    placeholderTextColor="rgba(0,0,0,0.45)"
-                                    keyboardType="number-pad"
-                                    value={code}
-                                    onChangeText={setCode}
-                                />
-                            </View>
-
-                            {!!error && <Text className="auth-error">{error}</Text>}
-
-                            <Pressable
-                                className={`auth-button ${
-                                    !canVerify ? "auth-button-disabled" : ""
-                                }`}
-                                onPress={handleVerify}
-                                disabled={!canVerify}
-                            >
-                                {loading ? (
-                                    <ActivityIndicator color="#fff9e3" />
-                                ) : (
-                                    <Text className="auth-button-text">Verify email</Text>
-                                )}
-                            </Pressable>
-                        </>
-                    )}
-                </View>
-            </View>
+                                <Pressable
+                                    className={`auth-button ${!canVerify ? "auth-button-disabled" : ""}`}
+                                    onPress={handleVerify}
+                                    disabled={!canVerify}
+                                >
+                                    {loading ? (
+                                        <ActivityIndicator color="#fff9e3" />
+                                    ) : (
+                                        <Text className="auth-button-text">Verify email</Text>
+                                    )}
+                                </Pressable>
+                            </>
+                        )}
+                    </View>
+                </ScrollView>
+            </KeyboardAvoidingView>
         </SafeAreaView>
     );
 }

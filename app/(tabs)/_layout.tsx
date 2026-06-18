@@ -1,29 +1,13 @@
-// Import the Tabs component from Expo Router.
-// This creates the bottom navigation bar for our app.
-import { Redirect, Tabs } from "expo-router";
-
-// Clerk hook used to check if the user is signed in.
 import { useAuth } from "@clerk/expo";
-
-// Import our list of tabs from a separate file.
-// This contains information like the tab name, title, and icon.
-import { tabs } from "@/constants/data";
-
-import { View, Image, ImageSourcePropType } from "react-native";
-
-// This hook gives us information about the device's safe area.
-// Safe areas help us avoid things like the iPhone home indicator.
+import { Redirect, Tabs } from "expo-router";
+import { ActivityIndicator, Image, ImageSourcePropType, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
+import { tabs } from "@/constants/data";
 import { colors, components } from "@/constants/theme";
 
-// Grab the tab bar settings from our theme file.
 const tabBar = components.tabBar;
-
-// Size of the actual icon image inside each tab.
 const TAB_ICON_SIZE = 24;
-
-// Size of the circular background behind the icon.
 const TAB_PILL_SIZE = 48;
 
 type TabIconProps = {
@@ -31,44 +15,43 @@ type TabIconProps = {
     icon: ImageSourcePropType;
 };
 
-// Main component that controls our bottom tab navigation.
-const TabLayout = () => {
-    const { isSignedIn, isLoaded } = useAuth();
+const TabIcon = ({ focused, icon }: TabIconProps) => (
+    <View
+        style={{
+            width: TAB_PILL_SIZE,
+            height: TAB_PILL_SIZE,
+            borderRadius: TAB_PILL_SIZE / 2,
+            backgroundColor: focused ? colors.accent : "transparent",
+            justifyContent: "center",
+            alignItems: "center",
+        }}
+    >
+        <Image
+            source={icon}
+            resizeMode="contain"
+            style={{
+                width: TAB_ICON_SIZE,
+                height: TAB_ICON_SIZE,
+            }}
+        />
+    </View>
+);
 
-    // Get safe area information for the current device.
+export default function TabLayout() {
+    const { isSignedIn, isLoaded } = useAuth();
     const insets = useSafeAreaInsets();
 
-    // Wait until Clerk finishes checking auth status.
     if (!isLoaded) {
-        return null;
+        return (
+            <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
+                <ActivityIndicator color={colors.accent} />
+            </View>
+        );
     }
 
-    // If the user is not signed in, send them to sign in.
     if (!isSignedIn) {
         return <Redirect href="/(auth)/sign-in" />;
     }
-
-    const TabIcon = ({ focused, icon }: TabIconProps) => (
-        <View
-            style={{
-                width: TAB_PILL_SIZE,
-                height: TAB_PILL_SIZE,
-                borderRadius: TAB_PILL_SIZE / 2,
-                backgroundColor: focused ? colors.accent : "transparent",
-                justifyContent: "center",
-                alignItems: "center",
-            }}
-        >
-            <Image
-                source={icon}
-                resizeMode="contain"
-                style={{
-                    width: TAB_ICON_SIZE,
-                    height: TAB_ICON_SIZE,
-                }}
-            />
-        </View>
-    );
 
     return (
         <Tabs
@@ -109,11 +92,7 @@ const TabLayout = () => {
             ))}
         </Tabs>
     );
-};
-
-export default TabLayout;
-
-
+}
 
 
 

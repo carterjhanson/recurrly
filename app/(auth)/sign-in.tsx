@@ -3,7 +3,10 @@ import { Link, useRouter, type Href } from "expo-router";
 import { useState } from "react";
 import {
     ActivityIndicator,
+    KeyboardAvoidingView,
+    Platform,
     Pressable,
+    ScrollView,
     Text,
     TextInput,
     View,
@@ -31,13 +34,13 @@ export default function SignInScreen() {
         setLoading(true);
 
         try {
-            const { error } = await signIn.password({
+            const { error: signInError } = await signIn.password({
                 emailAddress: emailAddress.trim(),
                 password,
             });
 
-            if (error) {
-                setError(error.message || "Unable to sign in.");
+            if (signInError) {
+                setError(signInError.message || "Unable to sign in.");
                 return;
             }
 
@@ -46,11 +49,12 @@ export default function SignInScreen() {
                     navigate: ({ decorateUrl }) => {
                         const url = decorateUrl("/(tabs)");
 
-                        if (url.startsWith("http")) {
+                        if (Platform.OS === "web" && url.startsWith("http")) {
                             window.location.href = url;
-                        } else {
-                            router.replace(url as Href);
+                            return;
                         }
+
+                        router.replace(url as Href);
                     },
                 });
             } else {
@@ -64,74 +68,95 @@ export default function SignInScreen() {
     };
 
     return (
-        <SafeAreaView className="auth-safe-area">
-            <View className="auth-screen">
-                <View className="auth-brand-block">
-                    <View className="auth-logo-row">
-                        <View className="auth-logo-mark">
-                            <Text className="auth-logo-text">R</Text>
+        <SafeAreaView
+            style={{
+                flex: 1,
+                backgroundColor: "#fff9e3",
+            }}
+        >
+            <KeyboardAvoidingView
+                style={{ flex: 1 }}
+                behavior={Platform.OS === "ios" ? "padding" : "height"}
+            >
+                <ScrollView
+                    keyboardShouldPersistTaps="handled"
+                    showsVerticalScrollIndicator={false}
+                    contentContainerStyle={{
+                        flexGrow: 1,
+                        justifyContent: "center",
+                        padding: 20,
+                    }}
+                >
+                    <View className="auth-brand-block">
+                        <View className="auth-logo-row">
+                            <View className="auth-logo-mark">
+                                <Text className="auth-logo-text">R</Text>
+                            </View>
+
+                            <View>
+                                <Text className="auth-brand-title">Recurrly</Text>
+                                <Text className="auth-brand-subtitle">SMART BILLING</Text>
+                            </View>
+                        </View>
+                    </View>
+
+                    <Text className="auth-title">Welcome back</Text>
+                    <Text className="auth-subtitle">
+                        Sign in to continue managing your subscriptions.
+                    </Text>
+
+                    <View className="auth-card">
+                        <View className="auth-field">
+                            <Text className="auth-label">Email</Text>
+                            <TextInput
+                                className="auth-input"
+                                placeholder="Enter your email"
+                                placeholderTextColor="rgba(0,0,0,0.45)"
+                                autoCapitalize="none"
+                                autoCorrect={false}
+                                keyboardType="email-address"
+                                textContentType="emailAddress"
+                                value={emailAddress}
+                                onChangeText={setEmailAddress}
+                            />
                         </View>
 
-                        <View>
-                            <Text className="auth-brand-title">Recurrly</Text>
-                            <Text className="auth-brand-subtitle">SMART BILLING</Text>
+                        <View className="auth-field">
+                            <Text className="auth-label">Password</Text>
+                            <TextInput
+                                className="auth-input"
+                                placeholder="Enter your password"
+                                placeholderTextColor="rgba(0,0,0,0.45)"
+                                secureTextEntry
+                                textContentType="password"
+                                value={password}
+                                onChangeText={setPassword}
+                            />
+                        </View>
+
+                        {!!error && <Text className="auth-error">{error}</Text>}
+
+                        <Pressable
+                            className={`auth-button ${!canSubmit ? "auth-button-disabled" : ""}`}
+                            onPress={handleSignIn}
+                            disabled={!canSubmit}
+                        >
+                            {loading ? (
+                                <ActivityIndicator color="#fff9e3" />
+                            ) : (
+                                <Text className="auth-button-text">Sign in</Text>
+                            )}
+                        </Pressable>
+
+                        <View className="auth-link-row">
+                            <Text className="auth-link-copy">New to Recurrly? </Text>
+                            <Link href="/(auth)/sign-up">
+                                <Text className="auth-link">Create an account</Text>
+                            </Link>
                         </View>
                     </View>
-                </View>
-
-                <Text className="auth-title">Welcome back</Text>
-                <Text className="auth-subtitle">
-                    Sign in to continue managing your subscriptions.
-                </Text>
-
-                <View className="auth-card">
-                    <View className="auth-field">
-                        <Text className="auth-label">Email</Text>
-                        <TextInput
-                            className="auth-input"
-                            placeholder="Enter your email"
-                            placeholderTextColor="rgba(0,0,0,0.45)"
-                            autoCapitalize="none"
-                            keyboardType="email-address"
-                            value={emailAddress}
-                            onChangeText={setEmailAddress}
-                        />
-                    </View>
-
-                    <View className="auth-field">
-                        <Text className="auth-label">Password</Text>
-                        <TextInput
-                            className="auth-input"
-                            placeholder="Enter your password"
-                            placeholderTextColor="rgba(0,0,0,0.45)"
-                            secureTextEntry
-                            value={password}
-                            onChangeText={setPassword}
-                        />
-                    </View>
-
-                    {!!error && <Text className="auth-error">{error}</Text>}
-
-                    <Pressable
-                        className={`auth-button ${!canSubmit ? "auth-button-disabled" : ""}`}
-                        onPress={handleSignIn}
-                        disabled={!canSubmit}
-                    >
-                        {loading ? (
-                            <ActivityIndicator color="#fff9e3" />
-                        ) : (
-                            <Text className="auth-button-text">Sign in</Text>
-                        )}
-                    </Pressable>
-
-                    <View className="auth-link-row">
-                        <Text className="auth-link-copy">New to Recurrly? </Text>
-                        <Link href="/(auth)/sign-up">
-                            <Text className="auth-link">Create an account</Text>
-                        </Link>
-                    </View>
-                </View>
-            </View>
+                </ScrollView>
+            </KeyboardAvoidingView>
         </SafeAreaView>
     );
 }

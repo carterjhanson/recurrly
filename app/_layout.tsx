@@ -2,37 +2,72 @@ import "@/global.css";
 
 import { ClerkProvider } from "@clerk/expo";
 import { tokenCache } from "@clerk/expo/token-cache";
-import { SplashScreen, Stack } from "expo-router";
+import { Stack } from "expo-router";
+import * as SplashScreen from "expo-splash-screen";
 import { useFonts } from "expo-font";
 import { useEffect } from "react";
+import { ActivityIndicator, Text, View } from "react-native";
 
-const publishableKey = process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY!;
+SplashScreen.preventAutoHideAsync().catch(() => {
+    // Splash screen may already be hidden during fast refresh.
+});
 
-if (!publishableKey) {
-  throw new Error("Missing EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY in .env");
-}
+const publishableKey = process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY;
 
 export default function RootLayout() {
-  const [fontsLoaded] = useFonts({
-    "sans-regular": require("../assets/fonts/PlusJakartaSans-Regular.ttf"),
-    "sans-bold": require("../assets/fonts/PlusJakartaSans-Bold.ttf"),
-    "sans-medium": require("../assets/fonts/PlusJakartaSans-Medium.ttf"),
-    "sans-light": require("../assets/fonts/PlusJakartaSans-Light.ttf"),
-    "sans-semibold": require("../assets/fonts/PlusJakartaSans-SemiBold.ttf"),
-    "sans-extrabold": require("../assets/fonts/PlusJakartaSans-ExtraBold.ttf"),
-  });
+    const [fontsLoaded, fontError] = useFonts({
+        "sans-regular": require("../assets/fonts/PlusJakartaSans-Regular.ttf"),
+        "sans-bold": require("../assets/fonts/PlusJakartaSans-Bold.ttf"),
+        "sans-medium": require("../assets/fonts/PlusJakartaSans-Medium.ttf"),
+        "sans-light": require("../assets/fonts/PlusJakartaSans-Light.ttf"),
+        "sans-semibold": require("../assets/fonts/PlusJakartaSans-SemiBold.ttf"),
+        "sans-extrabold": require("../assets/fonts/PlusJakartaSans-ExtraBold.ttf"),
+    });
 
-  useEffect(() => {
-    if (fontsLoaded) {
-      SplashScreen.hideAsync();
+    useEffect(() => {
+        if (fontsLoaded || fontError) {
+            SplashScreen.hideAsync().catch(() => {
+                // Splash screen may already be hidden.
+            });
+        }
+    }, [fontsLoaded, fontError]);
+
+    if (!publishableKey) {
+        return (
+            <View
+                style={{
+                    flex: 1,
+                    backgroundColor: "#fff9e3",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    padding: 24,
+                }}
+            >
+                <Text style={{ color: "#081126", textAlign: "center", fontSize: 16 }}>
+                    Missing EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY in your .env file.
+                </Text>
+            </View>
+        );
     }
-  }, [fontsLoaded]);
 
-  if (!fontsLoaded) return null;
+    if (!fontsLoaded && !fontError) {
+        return (
+            <View
+                style={{
+                    flex: 1,
+                    backgroundColor: "#fff9e3",
+                    alignItems: "center",
+                    justifyContent: "center",
+                }}
+            >
+                <ActivityIndicator color="#ea7a53" />
+            </View>
+        );
+    }
 
-  return (
-      <ClerkProvider publishableKey={publishableKey} tokenCache={tokenCache}>
-        <Stack screenOptions={{ headerShown: false }} />
-      </ClerkProvider>
-  );
+    return (
+        <ClerkProvider publishableKey={publishableKey} tokenCache={tokenCache}>
+            <Stack screenOptions={{ headerShown: false }} />
+        </ClerkProvider>
+    );
 }
