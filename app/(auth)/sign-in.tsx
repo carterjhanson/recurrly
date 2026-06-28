@@ -68,12 +68,7 @@ export default function SignInScreen() {
     };
 
     return (
-        <SafeAreaView
-            style={{
-                flex: 1,
-                backgroundColor: "#fff9e3",
-            }}
-        >
+        <SafeAreaView style={{ flex: 1, backgroundColor: "#fff9e3" }}>
             <KeyboardAvoidingView
                 style={{ flex: 1 }}
                 behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -134,10 +129,20 @@ export default function SignInScreen() {
                             />
                         </View>
 
+                        <View style={{ alignItems: "flex-end", marginBottom: 12 }}>
+                            <Link href="/(auth)/forgot-password" asChild>
+                                <Pressable>
+                                    <Text className="auth-link">Forgot password?</Text>
+                                </Pressable>
+                            </Link>
+                        </View>
+
                         {!!error && <Text className="auth-error">{error}</Text>}
 
                         <Pressable
-                            className={`auth-button ${!canSubmit ? "auth-button-disabled" : ""}`}
+                            className={`auth-button ${
+                                !canSubmit ? "auth-button-disabled" : ""
+                            }`}
                             onPress={handleSignIn}
                             disabled={!canSubmit}
                         >
