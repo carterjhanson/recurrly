@@ -215,9 +215,9 @@
 .sub-head {
     flex-direction: row;
     align-items: center;
-    padding-top: 8px;
-    padding-bottom: 8px;
+    justify-content: space-between;
 }
+
 
 .sub-main {
     min-width: 0px;
@@ -471,4 +471,143 @@
     font-size: 14px;
     font-family: sans-bold;
     color: #ea7a53;
+}
+.settings-title {
+    font-size: 32px;
+    font-family: sans-extrabold;
+    color: #081126;
+}
+
+.settings-subtitle {
+    margin-top: 6px;
+    margin-bottom: 24px;
+    font-size: 15px;
+    font-family: sans-medium;
+    color: rgba(0, 0, 0, 0.6);
+}
+
+.settings-card {
+    margin-bottom: 16px;
+    border-width: 1px;
+    border-color: rgba(0, 0, 0, 0.1);
+    border-radius: 24px;
+    background-color: #fff8e7;
+    padding: 18px;
+}
+
+.settings-section-title {
+    margin-bottom: 14px;
+    font-size: 18px;
+    font-family: sans-bold;
+    color: #081126;
+}
+
+.settings-row {
+    padding-top: 12px;
+    padding-bottom: 12px;
+    border-bottom-width: 1px;
+    border-bottom-color: rgba(0, 0, 0, 0.08);
+}
+
+.settings-label {
+    font-size: 14px;
+    font-family: sans-bold;
+    color: #081126;
+}
+
+.settings-value {
+    margin-top: 4px;
+    font-size: 14px;
+    font-family: sans-medium;
+    color: rgba(0, 0, 0, 0.6);
+}
+
+.settings-signout-button {
+    margin-top: 8px;
+    border-radius: 18px;
+    background-color: #081126;
+    padding-top: 16px;
+    padding-bottom: 16px;
+    align-items: center;
+}
+
+.settings-signout-text {
+    font-size: 16px;
+    font-family: sans-extrabold;
+    color: #fff9e3;
+}
+
+.settings-version {
+    margin-top: 18px;
+    text-align: center;
+    font-size: 13px;
+    font-family: sans-medium;
+    color: rgba(0, 0, 0, 0.45);
+}
+.subscriptions-title {
+    font-size: 32px;
+    font-family: sans-extrabold;
+    color: #081126;
+}
+
+.subscriptions-subtitle {
+    margin-top: 6px;
+    margin-bottom: 20px;
+    font-size: 15px;
+    font-family: sans-medium;
+    color: rgba(0, 0, 0, 0.6);
+}
+
+.subscriptions-search {
+    width: 100%;
+    min-height: 52px;
+    border-width: 1px;
+    border-color: rgba(0, 0, 0, 0.1);
+    border-radius: 16px;
+    background-color: #fff8e7;
+    padding-left: 16px;
+    padding-right: 16px;
+    font-size: 15px;
+    font-family: sans-medium;
+    color: #081126;
+}
+
+.subscriptions-summary-row {
+    margin-top: 14px;
+    margin-bottom: 16px;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.subscriptions-count {
+    font-size: 14px;
+    font-family: sans-bold;
+    color: rgba(0, 0, 0, 0.55);
+}
+
+.subscriptions-clear {
+    font-size: 14px;
+    font-family: sans-bold;
+    color: #ea7a53;
+}
+
+.subscriptions-empty {
+    margin-top: 40px;
+    align-items: center;
+    padding: 24px;
+}
+
+.subscriptions-empty-title {
+    font-size: 20px;
+    font-family: sans-bold;
+    color: #081126;
+}
+
+.subscriptions-empty-copy {
+    margin-top: 8px;
+    text-align: center;
+    font-size: 14px;
+    font-family: sans-medium;
+    color: rgba(0, 0, 0, 0.6);
 }

@@ -18,7 +18,7 @@ const SubscriptionCard = ({ name, price, currency, icon, billing, color, categor
                         }}
                     />
                     <View className="sup-copy">
-                        <Text numberOfLines={1} className="sub-title">
+                        <Text numberOfLines={1} className="sub-title" ellipsizeMode="tail">
                             {name}
                         </Text>
                         <Text numberOfLines={1} ellipsizeMode="tail" className="sub-meta">

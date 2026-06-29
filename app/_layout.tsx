@@ -7,6 +7,7 @@ import * as SplashScreen from "expo-splash-screen";
 import { useFonts } from "expo-font";
 import { useEffect } from "react";
 import { ActivityIndicator, Text, View } from "react-native";
+import { PostHogProvider } from "posthog-react-native";
 
 SplashScreen.preventAutoHideAsync().catch(() => {
     // Splash screen may already be hidden during fast refresh.
@@ -66,8 +67,13 @@ export default function RootLayout() {
     }
 
     return (
-        <ClerkProvider publishableKey={publishableKey} tokenCache={tokenCache}>
-            <Stack screenOptions={{ headerShown: false }} />
-        </ClerkProvider>
+        <PostHogProvider
+            apiKey={process.env.EXPO_PUBLIC_POSTHOG_KEY!}
+            options={{ host: process.env.EXPO_PUBLIC_POSTHOG_HOST }}
+        >
+            <ClerkProvider publishableKey={publishableKey} tokenCache={tokenCache}>
+                <Stack screenOptions={{ headerShown: false }} />
+            </ClerkProvider>
+        </PostHogProvider>
     );
 }
