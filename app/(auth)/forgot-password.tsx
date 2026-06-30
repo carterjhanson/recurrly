@@ -281,3 +281,29 @@ export default function ForgotPasswordScreen() {
         </SafeAreaView>
     );
 }
+
+/*
+Forgot Password Flow
+
+User enters email
+        ↓
+handleSendCode()
+        ↓
+Clerk emails verification code
+        ↓
+codeSent = true
+        ↓
+Screen changes to verification form
+        ↓
+User enters code + new password
+        ↓
+handleResetPassword()
+        ↓
+Verify code with Clerk
+        ↓
+Save new password
+        ↓
+Automatically sign the user in
+        ↓
+Navigate to Home Tabs
+*/
